@@ -1,11 +1,16 @@
 package es.a926666.proyectofinal.category;
 
-import jakarta.annotation.Generated;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import es.a926666.proyectofinal.product.Product;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,4 +28,8 @@ public class Category {
     @Basic
     private String name;
     private String description;
+
+    @ManyToMany(mappedBy = "categories")
+    @JsonBackReference(value = "Product-Category")
+    private List<Product> products;
 }

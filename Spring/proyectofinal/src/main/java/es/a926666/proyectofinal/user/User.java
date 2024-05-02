@@ -6,13 +6,16 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import jakarta.annotation.Generated;
+import es.a926666.proyectofinal.category.Category;
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +38,15 @@ public class User implements UserDetails {
     private String email;
     private Role rol;
 	
+	@ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+        name = "user_product", 
+		joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
+        inverseJoinColumns=@JoinColumn(name="product_id",referencedColumnName = "id")
+    )
+    //@JsonManagedReference(value = "User-Product")
+    private List<Category> categories;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(rol.name()));
