@@ -1,9 +1,6 @@
 package es.a926666.proyectofinal.category;
 
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import es.a926666.proyectofinal.product.Product;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
@@ -30,6 +27,5 @@ public class Category {
     private String description;
 
     @ManyToMany(mappedBy = "categories")
-    @JsonBackReference(value = "Product-Category")
     private List<Product> products;
 }

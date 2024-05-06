@@ -3,7 +3,6 @@ package es.a926666.proyectofinal.brand;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import es.a926666.proyectofinal.serie.Serie;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -32,7 +31,6 @@ public class Brand {
     private String image;
 
     @OneToMany(mappedBy = "brand",cascade= CascadeType.ALL)
-    @JsonBackReference(value = "Brand-Serie")
     private List<Serie> series;
 
 }
