@@ -16,7 +16,7 @@ public class BrandService {
     private BrandRepository brandRepository;
 
     public ResponseEntity<?> getAllBrands() {
-        List<BrandDTO> brands = brandRepository.findBrandsBy();
+        List<Brand> brands = brandRepository.findAll();
         if(brands.size()>0){
             return ResponseEntity.ok(brands);
         }
@@ -26,7 +26,7 @@ public class BrandService {
     }
 
     public ResponseEntity<?>  getBrandById(Integer id) {
-        Optional<BrandDTO> brand = brandRepository.findBy(id);
+        Optional<Brand> brand = brandRepository.findById(id);
         if(brand.isPresent()){
             return ResponseEntity.ok(brand);
         }
@@ -37,7 +37,7 @@ public class BrandService {
 
     public ResponseEntity<?>  createBrand(Brand brandNew) {
         try {
-            Optional<BrandDTO> brand = brandRepository.findByName(brandNew.getName());
+            Optional<Brand> brand = brandRepository.findByName(brandNew.getName());
             if(brand.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
@@ -51,7 +51,7 @@ public class BrandService {
     }
 
     public ResponseEntity<?>  updateBrand(Integer id, Brand brandNew) {
-        Optional<BrandDTO> brand = brandRepository.findBy(id);
+        Optional<Brand> brand = brandRepository.findById(id);
         if(brand.isPresent()){
             brandNew.setId(id);
             brandRepository.save(brandNew);

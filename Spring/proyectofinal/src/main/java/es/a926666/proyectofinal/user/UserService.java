@@ -15,7 +15,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public ResponseEntity<?> getAllUsers() {
-        List<UserDTO> users = userRepository.findUsersBy();
+        List<User> users = userRepository.findAll();
         if(users.size()>0){
             return ResponseEntity.ok(users);
         }
@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public ResponseEntity<?>  getUserById(Integer id) {
-        Optional<UserDTO> user = userRepository.findBy(id);
+        Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
             return ResponseEntity.ok(user);
         }
@@ -36,7 +36,7 @@ public class UserService {
 
     public ResponseEntity<?>  createUser(User userNew) {
         try {
-            Optional<UserDTO> user = userRepository.findByUsername(userNew.getUsername());
+            Optional<User> user = userRepository.findByUsername(userNew.getUsername());
             if(user.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public ResponseEntity<?>  updateUser(Integer id, User userNew) {
-        Optional<UserDTO> user = userRepository.findBy(id);
+        Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
             userNew.setId(id);
             userRepository.save(userNew);

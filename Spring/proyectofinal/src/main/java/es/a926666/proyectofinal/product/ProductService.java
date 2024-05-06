@@ -6,14 +6,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
     public ResponseEntity<?> getAllProducts() {
-        List<ProductDTO> products = productRepository.findProductsBy();
+        List<Product> products = productRepository.findAll();
         if(products.size()>0){
             return ResponseEntity.ok(products);
         }
@@ -23,7 +24,7 @@ public class ProductService {
     }
 
     public ResponseEntity<?>  getProductById(Integer id) {
-        Optional<ProductDTO> product = productRepository.findBy(id);
+        Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
             return ResponseEntity.ok(product);
         }
@@ -34,7 +35,7 @@ public class ProductService {
 
     public ResponseEntity<?>  createProduct(Product productNew) {
         try {
-            Optional<ProductDTO> product = productRepository.findByName(productNew.getName());
+            Optional<Product> product = productRepository.findByName(productNew.getName());
             if(product.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
@@ -48,7 +49,7 @@ public class ProductService {
     }
 
     public ResponseEntity<?>  updateProduct(Integer id, Product productNew) {
-        Optional<ProductDTO> product = productRepository.findBy(id);
+        Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
             productNew.setId(id);
             productRepository.save(productNew);

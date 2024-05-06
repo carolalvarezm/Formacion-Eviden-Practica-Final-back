@@ -15,7 +15,7 @@ public class SerieService {
     private SerieRepository serieRepository;
 
     public ResponseEntity<?> getAllSeries() {
-        List<SerieDTO> series = serieRepository.findSeriesBy();
+        List<Serie> series = serieRepository.findAll();
         if(series.size()>0){
             return ResponseEntity.ok(series);
         }
@@ -25,7 +25,7 @@ public class SerieService {
     }
 
     public ResponseEntity<?>  getSerieById(Integer id) {
-        Optional<SerieDTO> serie = serieRepository.findBy(id);
+        Optional<Serie> serie = serieRepository.findById(id);
         if(serie.isPresent()){
             return ResponseEntity.ok(serie);
         }
@@ -36,7 +36,7 @@ public class SerieService {
 
     public ResponseEntity<?>  createSerie(Serie serieNew) {
         try {
-            Optional<SerieDTO> serie = serieRepository.findByName(serieNew.getName());
+            Optional<Serie> serie = serieRepository.findByName(serieNew.getName());
             if(serie.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
@@ -50,7 +50,7 @@ public class SerieService {
     }
 
     public ResponseEntity<?>  updateSerie(Integer id, Serie serieNew) {
-        Optional<SerieDTO> serie = serieRepository.findBy(id);
+        Optional<Serie> serie = serieRepository.findById(id);
         if(serie.isPresent()){
             serieNew.setId(id);
             serieRepository.save(serieNew);

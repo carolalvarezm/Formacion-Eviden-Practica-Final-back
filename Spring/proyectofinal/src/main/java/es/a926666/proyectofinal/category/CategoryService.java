@@ -16,7 +16,7 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     public ResponseEntity<?> getAllCategories() {
-        List<CategoryDTO> categories = categoryRepository.findCategoriesBy();
+        List<Category> categories = categoryRepository.findAll();
         if(categories.size()>0){
             return ResponseEntity.ok(categories);
         }
@@ -26,7 +26,7 @@ public class CategoryService {
     }
 
     public ResponseEntity<?>  getCategoryById(Integer id) {
-        Optional<CategoryDTO> category = categoryRepository.findBy(id);
+        Optional<Category> category = categoryRepository.findById(id);
         if(category.isPresent()){
             return ResponseEntity.ok(category);
         }
@@ -37,7 +37,7 @@ public class CategoryService {
 
     public ResponseEntity<?>  createCategory(Category categoryNew) {
         try {
-            Optional<CategoryDTO> category = categoryRepository.findByName(categoryNew.getName());
+            Optional<Category> category = categoryRepository.findByName(categoryNew.getName());
             if(category.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
@@ -51,7 +51,7 @@ public class CategoryService {
     }
 
     public ResponseEntity<?>  updateCategory(Integer id, Category categoryNew) {
-        Optional<CategoryDTO> category = categoryRepository.findBy(id);
+        Optional<Category> category = categoryRepository.findById(id);
         if(category.isPresent()){
             categoryNew.setId(id);
             categoryRepository.save(categoryNew);

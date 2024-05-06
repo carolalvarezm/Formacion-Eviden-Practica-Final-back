@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer>{
-    Optional<ProductDTO> findBy(Integer id);
-    List<ProductDTO> findProductsBy();
-    Optional<ProductDTO> findByName(String name);
+    Optional<Product> findById(Integer id);
+    List<Product> findAll();
+    Optional<Product> findByName(String name);
 }

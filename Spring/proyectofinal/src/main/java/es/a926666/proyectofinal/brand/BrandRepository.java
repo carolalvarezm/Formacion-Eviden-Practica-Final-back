@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand,Integer>{
-    Optional<BrandDTO> findBy(Integer id);
-    List<BrandDTO> findBrandsBy();
-    Optional<BrandDTO> findByName(String name);
+    Optional<Brand> findById(Integer id);
+    List<Brand> findAll();
+    Optional<Brand> findByName(String name);
 }

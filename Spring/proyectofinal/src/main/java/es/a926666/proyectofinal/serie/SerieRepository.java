@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SerieRepository extends JpaRepository<Serie,Integer>{
-    Optional<SerieDTO> findBy(Integer id);
-    List<SerieDTO> findSeriesBy();
-    Optional<SerieDTO> findByName(String name);
+    Optional<Serie> findById(Integer id);
+    List<Serie> findAll();
+    Optional<Serie> findByName(String name);
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer> {
-    Optional<UserDTO> findBy(Integer id);
-    List<UserDTO> findUsersBy();
-    Optional<UserDTO> findByUsername(String name);
+    Optional<User> findById(Integer id);
+    List<User> findAll();
+    Optional<User> findByUsername(String username);
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Integer>{
-    Optional<CategoryDTO> findBy(Integer id);
-    List<CategoryDTO> findCategoriesBy();
-    Optional<CategoryDTO> findByName(String name);
+    Optional<Category> findById(Integer id);
+    List<Category> findCategoriesBy();
+    Optional<Category> findByName(String name);
 }
