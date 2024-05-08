@@ -10,12 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import es.a926666.proyectofinal.serie.SerieDTOWB;
+import es.a926666.proyectofinal.serie.SerieService;
+
+
 
 
 @Service
 public class BrandService {
     @Autowired
     private BrandRepository brandRepository;
+    @Autowired
+    private SerieService serieService;
 
     public ResponseEntity<?> getAllBrands() {
         List<Brand> brands = brandRepository.findAll();
@@ -44,7 +50,19 @@ public class BrandService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
         }
     }
-
+    public ResponseEntity<?>  getSeriesByBrandId(Integer id) {
+        Optional<Brand> brand = brandRepository.findById(id);
+        if(brand.isPresent()){
+        List<SerieDTOWB> seriesDto=serieService.translateListToDTO(brand.get().getSeries());
+            return ResponseEntity.ok(seriesDto);
+        }
+        if(brand.isPresent()){
+            return ResponseEntity.ok(brand);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
+        }
+    }
     public ResponseEntity<?>  createBrand(Brand brandNew) {
         try {
             Optional<Brand> brand = brandRepository.findByName(brandNew.getName());

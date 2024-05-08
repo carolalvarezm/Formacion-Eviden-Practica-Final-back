@@ -8,11 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import es.a926666.proyectofinal.product.ProductDTO;
+
+import es.a926666.proyectofinal.product.ProductService;
+
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ProductService productService;
 
     public ResponseEntity<?> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -79,6 +85,17 @@ public class UserService {
         if(user.isPresent()){
             UserDTO userDto=new UserDTO(user.get().getUsername(),user.get().getFirstname(),user.get().getLastname(),user.get().getEmail());
             return ResponseEntity.ok(userDto);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
+        }
+    }
+
+    public ResponseEntity<?> getProductsByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
+            List<ProductDTO> productsDTO= productService.translateListToDTO(user.get().getProducts());
+            return ResponseEntity.ok(productsDTO);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");

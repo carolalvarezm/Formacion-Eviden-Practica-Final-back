@@ -9,10 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import es.a926666.proyectofinal.brand.BrandDTO;
 import es.a926666.proyectofinal.brand.BrandService;
+import es.a926666.proyectofinal.category.Category;
 import es.a926666.proyectofinal.category.CategoryDTO;
 import es.a926666.proyectofinal.category.CategoryService;
-import es.a926666.proyectofinal.serie.SerieDTO;
+import es.a926666.proyectofinal.serie.SerieDTOWB;
 import es.a926666.proyectofinal.serie.SerieService;
 
 @Service
@@ -90,8 +92,8 @@ public class ProductService {
     }
     public ProductDTO translateToDTO(Product product){
         List<CategoryDTO> categories=categoryService.translateListToDTO(product.getCategories());
-        SerieDTO serie=serieService.translateToDTO(product.getSerie());
-        BrandDTO brand=brandService.translateToDTO(product.getSerie().getBrand());
+        SerieDTOWB serie=serieService.translateToDTOwithoutBrand(product.getSerie());
+        BrandDTO brand=brandService.translateToDTO(product.getBrand());
         ProductDTO productDTO= new ProductDTO(product.getId(),product.getName(), product.getImage(), product.getDescription(), serie,brand,categories);
         return productDTO;
     }
@@ -101,6 +103,23 @@ public class ProductService {
             productsDtos.add(this.translateToDTO(product));
         }
         return productsDtos;
+    }
+
+    public ResponseEntity<?> addListofCategorytoProduct(Integer id, List<Category> categories) {
+        try {
+            Optional<Product> product = productRepository.findById(id);
+            if(product.isPresent()){
+                product.get().setCategories(categories);
+                productRepository.save(product.get());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Se ha modificado con éxito");
+            }
+            else{
+                
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el producto a modificar");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
+        }
     }
 
 }

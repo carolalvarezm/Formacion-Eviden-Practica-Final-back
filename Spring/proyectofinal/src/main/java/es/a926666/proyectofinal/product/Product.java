@@ -4,8 +4,7 @@ package es.a926666.proyectofinal.product;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import es.a926666.proyectofinal.brand.Brand;
 import es.a926666.proyectofinal.category.Category;
 import es.a926666.proyectofinal.serie.Serie;
 import jakarta.persistence.Basic;
@@ -40,6 +39,10 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="serie_id")
     private Serie serie;
+
+    @ManyToOne
+    @JoinColumn(name="brand_id")
+    private Brand brand;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(

@@ -1,5 +1,7 @@
 package es.a926666.proyectofinal.product;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import es.a926666.proyectofinal.category.Category;
 
 
 @RestController
@@ -31,6 +35,10 @@ public class ProductController {
     @PostMapping("")
     public ResponseEntity<?>  createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
+    }
+    @PutMapping("/{id}/categories")
+    public ResponseEntity<?>  addCategorytoProduct(@PathVariable Integer id,@RequestBody List<Category> categories) {
+        return productService.addListofCategorytoProduct(id,categories);
     }
     @PutMapping("/{id}")
     public ResponseEntity<?>  updateProduct(@PathVariable Integer id, @RequestBody Product product) {

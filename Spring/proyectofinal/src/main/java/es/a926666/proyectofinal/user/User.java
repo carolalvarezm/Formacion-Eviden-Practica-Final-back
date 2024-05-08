@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import es.a926666.proyectofinal.category.Category;
+import es.a926666.proyectofinal.product.Product;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -45,8 +45,7 @@ public class User implements UserDetails {
 		joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
         inverseJoinColumns=@JoinColumn(name="product_id",referencedColumnName = "id")
     )
-    //@JsonManagedReference(value = "User-Product")
-    private List<Category> categories;
+    private List<Product> products;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

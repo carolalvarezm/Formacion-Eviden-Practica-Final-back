@@ -1,5 +1,6 @@
 package es.a926666.proyectofinal.serie;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,22 +9,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import es.a926666.proyectofinal.brand.Brand;
 import es.a926666.proyectofinal.brand.BrandDTO;
-import es.a926666.proyectofinal.brand.BrandService;
-import es.a926666.proyectofinal.product.ProductDTO;
+
+
+
 
 
 @Service
 public class SerieService {
     @Autowired
     private SerieRepository serieRepository;
-    @Autowired
-    private BrandService brandService;
+
 
     public ResponseEntity<?> getAllSeries() {
         List<Serie> series = serieRepository.findAll();
         if(series.size()>0){
-            return ResponseEntity.ok(series);
+            List<SerieDTOWB> seriesDTO = this.translateListToDTO(series);
+            return ResponseEntity.ok(seriesDTO);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -33,7 +36,8 @@ public class SerieService {
     public ResponseEntity<?>  getSerieById(Integer id) {
         Optional<Serie> serie = serieRepository.findById(id);
         if(serie.isPresent()){
-            return ResponseEntity.ok(serie);
+            SerieDTO serieDTO=this.translateToDTO(serie.get());
+            return ResponseEntity.ok(serieDTO);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -81,9 +85,24 @@ public class SerieService {
     }
 
     public SerieDTO translateToDTO(Serie serie) {
-        BrandDTO brandDTO=brandService.translateToDTO(serie.getBrand());
+        BrandDTO brandDTO=this.translateToDTO(serie.getBrand());
         return new SerieDTO( serie.getId(), serie.getName(), serie.getImage(),serie.getDescription(),brandDTO);
 
     }
+    public SerieDTOWB translateToDTOwithoutBrand(Serie serie) {
+        return new SerieDTOWB( serie.getId(), serie.getName(), serie.getImage(),serie.getDescription());
 
+    }
+    public BrandDTO translateToDTO(Brand brand){
+        BrandDTO brandDTO = new BrandDTO(brand.getId(),brand.getName(),brand.getDescription(),brand.getImage());
+        return brandDTO;
+    }
+
+    public List<SerieDTOWB> translateListToDTO(List<Serie> series) {
+        List<SerieDTOWB> seriesDtos=new ArrayList<SerieDTOWB>();
+        for (Serie serie : series) {
+            seriesDtos.add(this.translateToDTOwithoutBrand(serie));
+        }
+        return seriesDtos;
+    }
 }

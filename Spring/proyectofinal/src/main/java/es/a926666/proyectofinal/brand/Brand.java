@@ -3,6 +3,7 @@ package es.a926666.proyectofinal.brand;
 
 import java.util.List;
 
+import es.a926666.proyectofinal.product.Product;
 import es.a926666.proyectofinal.serie.Serie;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -32,5 +33,8 @@ public class Brand {
 
     @OneToMany(mappedBy = "brand",cascade= CascadeType.ALL)
     private List<Serie> series;
+
+    @OneToMany(mappedBy = "brand",cascade= CascadeType.ALL)
+    private List<Product> products;
 
 }

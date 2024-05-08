@@ -29,6 +29,10 @@ public class UserController {
     public ResponseEntity<?>  getUserByUsername(@PathVariable String username) {
         return userService.getUserByUsername(username);
     }
+    @GetMapping("/{username}/products")
+    public ResponseEntity<?>  getProductsByUsername(@PathVariable String username) {
+        return userService.getProductsByUsername(username);
+    }
     @PostMapping("")
     public ResponseEntity<?>  createUser(@RequestBody User user) {
         return userService.createUser(user);
