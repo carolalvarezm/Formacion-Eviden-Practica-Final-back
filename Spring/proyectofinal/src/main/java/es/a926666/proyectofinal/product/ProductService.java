@@ -1,5 +1,6 @@
 package es.a926666.proyectofinal.product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,15 +9,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import es.a926666.proyectofinal.brand.BrandService;
+import es.a926666.proyectofinal.category.CategoryDTO;
+import es.a926666.proyectofinal.category.CategoryService;
+import es.a926666.proyectofinal.serie.SerieDTO;
+import es.a926666.proyectofinal.serie.SerieService;
+
 @Service
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired 
+    private SerieService serieService;
+    @Autowired 
+    private BrandService brandService;
 
     public ResponseEntity<?> getAllProducts() {
         List<Product> products = productRepository.findAll();
+        List<ProductDTO> productDTOs= this.translateListToDTO(products);
         if(products.size()>0){
-            return ResponseEntity.ok(products);
+            return ResponseEntity.ok(productDTOs);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -25,8 +39,10 @@ public class ProductService {
 
     public ResponseEntity<?>  getProductById(Integer id) {
         Optional<Product> product = productRepository.findById(id);
+        
         if(product.isPresent()){
-            return ResponseEntity.ok(product);
+            ProductDTO productDTO=this.translateToDTO(product.get());
+            return ResponseEntity.ok(productDTO);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -71,6 +87,20 @@ public class ProductService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
         }
+    }
+    public ProductDTO translateToDTO(Product product){
+        List<CategoryDTO> categories=categoryService.translateListToDTO(product.getCategories());
+        SerieDTO serie=serieService.translateToDTO(product.getSerie());
+        BrandDTO brand=brandService.translateToDTO(product.getSerie().getBrand());
+        ProductDTO productDTO= new ProductDTO(product.getId(),product.getName(), product.getImage(), product.getDescription(), serie,brand,categories);
+        return productDTO;
+    }
+    public List<ProductDTO> translateListToDTO(List<Product> products){
+        List<ProductDTO> productsDtos=new ArrayList<ProductDTO>();
+        for (Product product : products) {
+            productsDtos.add(this.translateToDTO(product));
+        }
+        return productsDtos;
     }
 
 }

@@ -8,11 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import es.a926666.proyectofinal.brand.BrandDTO;
+import es.a926666.proyectofinal.brand.BrandService;
+import es.a926666.proyectofinal.product.ProductDTO;
+
 
 @Service
 public class SerieService {
     @Autowired
     private SerieRepository serieRepository;
+    @Autowired
+    private BrandService brandService;
 
     public ResponseEntity<?> getAllSeries() {
         List<Serie> series = serieRepository.findAll();
@@ -72,6 +78,12 @@ public class SerieService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
         }
+    }
+
+    public SerieDTO translateToDTO(Serie serie) {
+        BrandDTO brandDTO=brandService.translateToDTO(serie.getBrand());
+        return new SerieDTO( serie.getId(), serie.getName(), serie.getImage(),serie.getDescription(),brandDTO);
+
     }
 
 }

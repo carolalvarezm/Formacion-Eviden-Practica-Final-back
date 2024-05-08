@@ -38,11 +38,9 @@ public class Serie {
 
     @ManyToOne
     @JoinColumn(name="brand_id")
-    @JsonManagedReference(value = "Brand-Serie")
     private Brand brand;
 
-    @OneToMany(mappedBy = "product",cascade= CascadeType.ALL)
-    @JsonBackReference(value = "Serie-Product")
+    @OneToMany(mappedBy = "serie",cascade= CascadeType.ALL)
     private List<Product> products;
 
 }

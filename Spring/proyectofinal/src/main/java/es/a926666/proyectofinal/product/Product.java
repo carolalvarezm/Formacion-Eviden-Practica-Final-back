@@ -39,8 +39,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name="serie_id")
-    @JsonManagedReference(value = "Serie-Product")
-    private Serie product;
+    private Serie serie;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
@@ -48,7 +47,6 @@ public class Product {
         joinColumns=@JoinColumn(name="product_id",referencedColumnName = "id"),
         inverseJoinColumns=@JoinColumn(name="category_id", referencedColumnName = "id")
     )
-    @JsonManagedReference(value = "Product-Category")
     private List<Category> categories;
 
     

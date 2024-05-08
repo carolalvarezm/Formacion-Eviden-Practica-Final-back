@@ -74,4 +74,15 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<?> getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
+            UserDTO userDto=new UserDTO(user.get().getUsername(),user.get().getFirstname(),user.get().getLastname(),user.get().getEmail());
+            return ResponseEntity.ok(userDto);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
+        }
+    }
+
 }

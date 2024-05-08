@@ -1,5 +1,6 @@
 package es.a926666.proyectofinal.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 
+
 @Service
 public class CategoryService {
     @Autowired
@@ -17,8 +19,9 @@ public class CategoryService {
 
     public ResponseEntity<?> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
+        List<CategoryDTO> categoriesDtos=this.translateListToDTO(categories);
         if(categories.size()>0){
-            return ResponseEntity.ok(categories);
+            return ResponseEntity.ok(categoriesDtos);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -28,7 +31,8 @@ public class CategoryService {
     public ResponseEntity<?>  getCategoryById(Integer id) {
         Optional<Category> category = categoryRepository.findById(id);
         if(category.isPresent()){
-            return ResponseEntity.ok(category);
+            CategoryDTO categoryDTO=this.translateToDTO(category.get());
+            return ResponseEntity.ok(categoryDTO);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -67,12 +71,24 @@ public class CategoryService {
         try {
             Optional<Category> category = categoryRepository.findById(id);
             if(category.isPresent()){
+                
                 categoryRepository.deleteById(id);
             }
             return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
         }
+    }
+    public CategoryDTO translateToDTO(Category category){
+        CategoryDTO categoryDTO=new CategoryDTO(category.getId(),category.getName(),category.getDescription());
+        return categoryDTO;
+    }
+    public List<CategoryDTO> translateListToDTO(List<Category> categories){
+        List<CategoryDTO> categoriesDtos=new ArrayList<CategoryDTO>();
+        for (Category category : categories) {
+            categoriesDtos.add(this.translateToDTO(category));
+        }
+        return categoriesDtos;
     }
 
 }

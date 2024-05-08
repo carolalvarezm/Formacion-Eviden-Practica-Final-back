@@ -2,6 +2,7 @@ package es.a926666.proyectofinal.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
   
     @Autowired
@@ -23,9 +25,9 @@ public class UserController {
     public ResponseEntity<?> getAllUsers() {
         return userService.getAllUsers();
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<?>  getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    @GetMapping("/{username}")
+    public ResponseEntity<?>  getUserByUsername(@PathVariable String username) {
+        return userService.getUserByUsername(username);
     }
     @PostMapping("")
     public ResponseEntity<?>  createUser(@RequestBody User user) {

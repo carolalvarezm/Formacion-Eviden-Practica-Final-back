@@ -1,5 +1,6 @@
 package es.a926666.proyectofinal.brand;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 
+
 @Service
 public class BrandService {
     @Autowired
@@ -17,8 +19,12 @@ public class BrandService {
 
     public ResponseEntity<?> getAllBrands() {
         List<Brand> brands = brandRepository.findAll();
+        List<BrandDTO> brandsDtos=new ArrayList<BrandDTO>();
+        for (Brand brand : brands) {
+            brandsDtos.add(this.translateToDTO(brand));
+        }
         if(brands.size()>0){
-            return ResponseEntity.ok(brands);
+            return ResponseEntity.ok(brandsDtos);
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso");
@@ -27,6 +33,10 @@ public class BrandService {
 
     public ResponseEntity<?>  getBrandById(Integer id) {
         Optional<Brand> brand = brandRepository.findById(id);
+        if(brand.isPresent()){
+        BrandDTO brandDto=this.translateToDTO(brand.get());
+            return ResponseEntity.ok(brandDto);
+        }
         if(brand.isPresent()){
             return ResponseEntity.ok(brand);
         }
@@ -55,7 +65,7 @@ public class BrandService {
         if(brand.isPresent()){
             brandNew.setId(id);
             brandRepository.save(brandNew);
-            return ResponseEntity.status(HttpStatus.OK).body("Se ha modificado correctamente");
+            return ResponseEntity.ok("Se ha modificado correctamente");
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado la marca a modificar");
@@ -73,6 +83,10 @@ public class BrandService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
         }
+    }
+        public BrandDTO translateToDTO(Brand brand){
+        BrandDTO brandDTO=new BrandDTO(brand.getId(),brand.getName(),brand.getDescription(),brand.getImage());
+        return brandDTO;
     }
 
 }
