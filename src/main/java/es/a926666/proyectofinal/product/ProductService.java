@@ -1,15 +1,10 @@
 package es.a926666.proyectofinal.product;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import es.a926666.proyectofinal.images.ImagesService;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +20,9 @@ import es.a926666.proyectofinal.category.Category;
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
-    private static final String Path="proyectofinal\\imagenes\\productos";
-
+    private static final String Path="imagenes\\productos";
+    @Autowired
+    private ImagesService imageService;
 
     public ResponseEntity<?> getAllProducts() {
         try{
@@ -66,7 +62,7 @@ public class ProductService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
             else{
-                this.saveImage(fichero);
+                imageService.saveImage(fichero,Path);
                 productNew.setImage(fichero.getOriginalFilename());
                 productRepository.save(productNew);
                 Optional<Product> producto = productRepository.findByName(productNew.getName());
@@ -81,7 +77,7 @@ public class ProductService {
         try {
             Optional<Product> product = productRepository.findById(id);
             if(product.isPresent()){
-                this.saveImage(fichero);
+                imageService.saveImage(fichero,Path);
                 productNew.setImage(fichero.getOriginalFilename());
                 productNew.setId(id);
                 productRepository.save(productNew);
@@ -95,40 +91,6 @@ public class ProductService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
         }
     }
-
-    private void saveImage(MultipartFile fichero) throws IOException {
-        String fileName =fichero.getOriginalFilename();
-        String uploadDir=Path;
-        Path uploadPath = Paths.get(uploadDir);
-        System.out.println(uploadPath);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-          
-        try (InputStream inputStream = fichero.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ioe) {        
-            throw new IOException("Could not save image file: " + fileName, ioe);
-        }      
-    }
-    public byte[]  getProductImage(String imageName) {
-        try{
-            String uploadDir=Path;
-            Path uploadPath = Paths.get(uploadDir);
-            Path imagePath = uploadPath.resolve(imageName);
-            if (Files.exists(imagePath)) {
-                byte[] imageBytes = Files.readAllBytes(imagePath);
-                return imageBytes; 
-            } else {
-                return null; 
-            }
-        }catch(Exception e){
-            System.err.println(e);
-            return null;
-        }
-    }
-
 
     public ResponseEntity<?>  deleteProduct(Integer id) {
         try {

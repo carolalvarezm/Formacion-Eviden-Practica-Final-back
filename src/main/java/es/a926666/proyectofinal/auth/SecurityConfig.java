@@ -33,7 +33,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(authRequest->
         authRequest
         .requestMatchers("/auth/**").permitAll()
-        .requestMatchers("/api/v1/products/images/**").permitAll()
+        .requestMatchers("/api/v1/images/**").permitAll()
         .anyRequest().authenticated()
         )
         .sessionManagement(sessionManagement->

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.a926666.proyectofinal.category.Category;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -37,11 +36,7 @@ public class ProductController {
     public ResponseEntity<?>  getProductById(@PathVariable Integer id) {
         return productService.getProductById(id);
     }
-    @GetMapping("images/{filename}")
-    public byte[] getMethodName(@PathVariable String filename) {
-        System.out.println(filename);
-        return productService.getProductImage(filename);
-    }
+
     
     @PostMapping("")
     public ResponseEntity<?>  createProduct(@RequestPart Product producto ,@RequestPart("file") MultipartFile fichero) {

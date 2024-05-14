@@ -1,5 +1,6 @@
 package es.a926666.proyectofinal.brand;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import es.a926666.proyectofinal.images.ImagesService;
+import es.a926666.proyectofinal.product.Product;
 import es.a926666.proyectofinal.product.ProductDTO;
-import es.a926666.proyectofinal.product.ProductService;
+
 import es.a926666.proyectofinal.serie.SerieDTOWB;
 
 
@@ -22,8 +25,9 @@ import es.a926666.proyectofinal.serie.SerieDTOWB;
 public class BrandService {
     @Autowired
     private BrandRepository brandRepository;
+    private static final String Path="imagenes\\marcas";
     @Autowired
-    private ProductService productService;
+    private ImagesService imageService;
     @Autowired
     private es.a926666.proyectofinal.serie.SerieService SerieService;
     public ResponseEntity<?> getAllBrands() {
@@ -69,13 +73,15 @@ public class BrandService {
     
 
 
-    public ResponseEntity<?>  createBrand(Brand brandNew) {
+    public ResponseEntity<?>  createBrand(Brand brandNew, MultipartFile fichero) {
         try {
             Optional<Brand> brand = brandRepository.findByName(brandNew.getName());
             if(brand.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe el registro en la base de datos");
             }
             else{
+                imageService.saveImage(fichero,Path);
+                brandNew.setImage(fichero.getOriginalFilename());
                 brandRepository.save(brandNew);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Se ha creado la marca con éxito");
             }
@@ -84,23 +90,31 @@ public class BrandService {
         }
     }
 
-    public ResponseEntity<?>  updateBrand(Integer id, Brand brandNew) {
-        Optional<Brand> brand = brandRepository.findById(id);
-        if(brand.isPresent()){
-            brandNew.setId(id);
-            brandRepository.save(brandNew);
-            return ResponseEntity.ok("Se ha modificado correctamente");
+    public ResponseEntity<?>  updateBrand(Integer id, Brand brandNew, MultipartFile fichero) {
+        try{
+            Optional<Brand> brand = brandRepository.findById(id);
+            if(brand.isPresent()){
+                imageService.saveImage(fichero,Path);
+                brandNew.setImage(fichero.getOriginalFilename());
+                brandNew.setId(id);
+                brandRepository.save(brandNew);
+                return ResponseEntity.ok("Se ha modificado correctamente");
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado la marca a modificar");
+            }
         }
-        else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado la marca a modificar");
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ha habido un error, inténtelo más tarde");
         }
+        
 
     }
     public ResponseEntity<?> getProductsByBrand(Integer id) {
         try{
             Optional<Brand> brand = this.findById(id);
             if(brand.isPresent()){
-                List<ProductDTO> productsDTO= productService.translateListToDTO(brand.get().getProducts());
+                List<ProductDTO> productsDTO= this.translateListToDTO(brand.get().getProducts());
                 return ResponseEntity.ok(productsDTO);
             }
             else{
@@ -130,7 +144,21 @@ public class BrandService {
         public BrandDTO translateToDTO(Brand brand){
             ModelMapper modelMapper = new ModelMapper();
             BrandDTO brandDTO = modelMapper.map(brand, BrandDTO.class);
-            return brandDTO;
+            return brandDTO;}
+            
+        public ProductDTO translateToDTO(Product product) throws IOException{
+        ModelMapper modelMapper = new ModelMapper();
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        return productDTO;    
     }
+        public List<ProductDTO> translateListToDTO(List<Product> products) throws IOException{
+            List<ProductDTO> productsDtos=new ArrayList<ProductDTO>();
+            for (Product product : products) {
+
+                productsDtos.add(this.translateToDTO(product));
+            }
+            return productsDtos;
+        }
+
 
 }
